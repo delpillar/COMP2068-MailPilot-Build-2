@@ -1,6 +1,7 @@
 ﻿var stage: createjs.Stage;
 var queue;
 
+// Preload function
 function preload(): void {
     queue = new createjs.LoadQueue();
     queue.installPlugin(createjs.Sound);
@@ -15,23 +16,14 @@ function init(): void {
     stage = new createjs.Stage(document.getElementById("canvas"));
     stage.enableMouseOver(20);
     createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener("tick", handleTick);
+    createjs.Ticker.addEventListener("tick", gameLoop);
     gameStart();
 }
 
-function handleTick(event):void {
+function gameLoop(event):void {
     stage.update();
 }
 
 function gameStart(): void {
-    // Add code here
 
-    // Some example code here - to be replaced
-    var placeholder = new createjs.Bitmap(queue.getResult('loading'));
-    placeholder.regX = placeholder.image.width / 2;
-    placeholder.regY = placeholder.image.height / 2;
-    placeholder.x = stage.canvas.width / 2;
-    placeholder.y = stage.canvas.height / 2;
-    stage.addChild(placeholder);
-    createjs.Sound.play("yay");
 }

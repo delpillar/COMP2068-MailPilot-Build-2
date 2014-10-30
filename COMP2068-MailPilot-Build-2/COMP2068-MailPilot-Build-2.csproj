@@ -59,7 +59,13 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="images\cloud.png" />
+    <Content Include="images\island.png" />
+    <Content Include="images\ocean.gif" />
+    <Content Include="images\plane.png" />
     <Content Include="sounds\yay.ogg" />
+    <Content Include="sounds\engine.ogg" />
+    <Content Include="sounds\thunder.ogg" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
