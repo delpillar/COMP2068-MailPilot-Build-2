@@ -1,23 +1,21 @@
-﻿var stage: createjs.Stage;
+﻿var stage;
 var queue;
 
 // game objects
-var plane: Plane;
-var island: Island;
+var plane;
+var island;
 var clouds = [];
-var ocean: Ocean;
-var scoreboard: Scoreboard;
+var ocean;
+var scoreboard;
 
 // game constants
-var CLOUD_NUM: number = 3;
-var PLAYER_LIVES: number = 3;
+var CLOUD_NUM = 3;
+var PLAYER_LIVES = 3;
 var GAME_FONT = "40px Consolas";
 var FONT_COLOUR = "#FFFF00";
 
-
-
 // Preload function
-function preload(): void {
+function preload() {
     queue = new createjs.LoadQueue();
     queue.installPlugin(createjs.Sound);
     queue.addEventListener("complete", init);
@@ -31,7 +29,7 @@ function preload(): void {
     ]);
 }
 
-function init(): void {
+function init() {
     stage = new createjs.Stage(document.getElementById("canvas"));
     stage.enableMouseOver(20);
     createjs.Ticker.setFPS(60);
@@ -40,7 +38,7 @@ function init(): void {
 }
 
 // Game Loop
-function gameLoop(event): void {
+function gameLoop(event) {
     ocean.update();
     island.update();
     plane.update();
@@ -57,11 +55,8 @@ function gameLoop(event): void {
 }
 
 // Plane Class
-class Plane {
-    image: createjs.Bitmap;
-    width: number;
-    height: number;
-    constructor() {
+var Plane = (function () {
+    function Plane() {
         this.image = new createjs.Bitmap(queue.getResult("plane"));
         this.width = this.image.getBounds().width;
         this.height = this.image.getBounds().height;
@@ -71,19 +66,15 @@ class Plane {
 
         stage.addChild(this.image);
     }
-
-    update() {
+    Plane.prototype.update = function () {
         this.image.x = stage.mouseX;
-    }
-}
+    };
+    return Plane;
+})();
 
 // Island Class
-class Island {
-    image: createjs.Bitmap;
-    width: number;
-    height: number;
-    dy: number;
-    constructor() {
+var Island = (function () {
+    function Island() {
         this.image = new createjs.Bitmap(queue.getResult("island"));
         this.width = this.image.getBounds().width;
         this.height = this.image.getBounds().height;
@@ -93,29 +84,23 @@ class Island {
         stage.addChild(this.image);
         this.reset();
     }
-
-    reset() {
+    Island.prototype.reset = function () {
         this.image.y = -this.height;
         this.image.x = Math.floor(Math.random() * stage.canvas.width);
-    }
+    };
 
-    update() {
+    Island.prototype.update = function () {
         this.image.y += this.dy;
         if (this.image.y > (this.height + stage.canvas.height)) {
             this.reset();
         }
-       
-    }
-}
+    };
+    return Island;
+})();
 
 // Island Class
-class Cloud {
-    image: createjs.Bitmap;
-    width: number;
-    height: number;
-    dy: number;
-    dx: number;
-    constructor() {
+var Cloud = (function () {
+    function Cloud() {
         this.image = new createjs.Bitmap(queue.getResult("cloud"));
         this.width = this.image.getBounds().width;
         this.height = this.image.getBounds().height;
@@ -125,31 +110,26 @@ class Cloud {
         stage.addChild(this.image);
         this.reset();
     }
-
-    reset() {
+    Cloud.prototype.reset = function () {
         this.image.y = -this.height;
         this.image.x = Math.floor(Math.random() * stage.canvas.width);
         this.dy = Math.floor(Math.random() * 5 + 5);
         this.dx = Math.floor(Math.random() * 4 - 2);
-    }
+    };
 
-    update() {
+    Cloud.prototype.update = function () {
         this.image.y += this.dy;
         this.image.x += this.dx;
         if (this.image.y > (this.height + stage.canvas.height)) {
             this.reset();
         }
-
-    }
-}
+    };
+    return Cloud;
+})();
 
 // Ocean Class
-class Ocean {
-    image: createjs.Bitmap;
-    width: number;
-    height: number;
-    dy: number;
-    constructor() {
+var Ocean = (function () {
+    function Ocean() {
         this.image = new createjs.Bitmap(queue.getResult("ocean"));
         this.width = this.image.getBounds().width;
         this.height = this.image.getBounds().height;
@@ -157,29 +137,25 @@ class Ocean {
         stage.addChild(this.image);
         this.reset();
     }
-
-    reset() {
+    Ocean.prototype.reset = function () {
         this.image.y = -this.height + stage.canvas.height;
-    }
+    };
 
-    update() {
+    Ocean.prototype.update = function () {
         this.image.y += this.dy;
         if (this.image.y >= 0) {
             this.reset();
         }
-
-    }
-}
+    };
+    return Ocean;
+})();
 
 // Scoreboard Class
-class Scoreboard {
-    label: createjs.Text;
-    labelString: string = "";
-    lives: number = PLAYER_LIVES;
-    score: number = 0;
-    width: number;
-    height: number;
-    constructor() {
+var Scoreboard = (function () {
+    function Scoreboard() {
+        this.labelString = "";
+        this.lives = PLAYER_LIVES;
+        this.score = 0;
         this.label = new createjs.Text(this.labelString, GAME_FONT, FONT_COLOUR);
         this.update();
         this.width = this.label.getBounds().width;
@@ -187,19 +163,19 @@ class Scoreboard {
 
         stage.addChild(this.label);
     }
-
-    update() {
-        this.labelString = "Lives: " + this.lives.toString() + " Score: " + this.score.toString(); 
+    Scoreboard.prototype.update = function () {
+        this.labelString = "Lives: " + this.lives.toString() + " Score: " + this.score.toString();
         this.label.text = this.labelString;
-    }
-}
+    };
+    return Scoreboard;
+})();
 
-function distance(point1: createjs.Point, point2: createjs.Point):number {
-    var p1: createjs.Point;
-    var p2: createjs.Point;
-    var theXs: number;
-    var theYs: number;
-    var result: number;
+function distance(point1, point2) {
+    var p1;
+    var p2;
+    var theXs;
+    var theYs;
+    var result;
 
     p1 = new createjs.Point();
     p2 = new createjs.Point();
@@ -222,8 +198,8 @@ function distance(point1: createjs.Point, point2: createjs.Point):number {
 
 // Check Collision with Plane and Island
 function planeAndIsland() {
-    var p1: createjs.Point = new createjs.Point();
-    var p2: createjs.Point = new createjs.Point();
+    var p1 = new createjs.Point();
+    var p2 = new createjs.Point();
 
     p1.x = plane.image.x;
     p1.y = plane.image.y;
@@ -238,10 +214,10 @@ function planeAndIsland() {
 }
 
 // Check Collision with Plane and Cloud
-function planeAndCloud(theCloud: Cloud) {
-    var p1: createjs.Point = new createjs.Point();
-    var p2: createjs.Point = new createjs.Point();
-    var cloud: Cloud = new Cloud();
+function planeAndCloud(theCloud) {
+    var p1 = new createjs.Point();
+    var p2 = new createjs.Point();
+    var cloud = new Cloud();
 
     cloud = theCloud;
 
@@ -265,7 +241,7 @@ function collisionCheck() {
     }
 }
 
-function gameStart(): void {
+function gameStart() {
     ocean = new Ocean();
     island = new Island();
     plane = new Plane();
@@ -274,5 +250,6 @@ function gameStart(): void {
         clouds[count] = new Cloud();
     }
 
-    scoreboard = new Scoreboard(); 
+    scoreboard = new Scoreboard();
 }
+//# sourceMappingURL=game.js.map
